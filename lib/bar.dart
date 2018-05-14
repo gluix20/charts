@@ -10,10 +10,18 @@ class Bar {
   Bar(this.height, this.color);
 
   factory Bar.empty() => new Bar(0.0, Colors.transparent);
+  /*factory Bar.empty(Random random) {
+    return new Bar(
+      0.0,
+      ColorPalette.primary.random(random),
+    );
+
+  }*/
 
   factory Bar.random(Random random) {
     return new Bar(
-      random.nextDouble() * 200.0,
+      //random.nextDouble() * 400.0,
+      400.0,
       ColorPalette.primary.random(random),
     );
   }
@@ -38,6 +46,7 @@ class BarTween extends Tween<Bar> {
 
 class BarChartPainter extends CustomPainter {
   static const barWidth = 32.0;
+  static const barHeight = 32.0;
 
   BarChartPainter(Animation<Bar> animation)
       : animation = animation,
@@ -54,9 +63,10 @@ class BarChartPainter extends CustomPainter {
     canvas.drawRect(
       new Rect.fromLTWH(
         (size.width - barWidth) / 2.0,
-        size.height - bar.height,
+        (size.height - bar.height) ,
         barWidth,
-        bar.height,
+        //bar.height,
+        barHeight
       ),
       paint,
     );

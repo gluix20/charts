@@ -24,6 +24,7 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
   int dataSet = 1;
   int iRandom;
   Duration dur;
+  double dy = 0.0;
 
   //ScrollSpringSimulation simulation;
   GravitySimulation simulation2;
@@ -96,8 +97,8 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
   void changeData() {
     setState(() {
 
-
-      if (aniStatus == AnimationStatus.completed) {
+      dy = tween.evaluate(animationC).dy;
+      if (dy <= 40.0 && dy >= 0.0) {
 
         dataSet++;
         iRandom = random.nextInt(1000);
@@ -111,29 +112,28 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    int dura = animationC.duration.inMilliseconds;
+
     return new Scaffold(
       body: new GestureDetector(
         onTap: changeData,
         child: new Container(
 
-          padding: const EdgeInsets.only(top: 500.0), //Push container to the bottom
+          padding: const EdgeInsets.only(top: 200.0), //Push container to the bottom
 
           child: new Column(
             children: <Widget>[
               new CustomPaint(
-                size: new Size(400.0, 100.0),
+
+                size: new Size(100.0, 500.0),
                 painter: new BarChartPainter(tween.animate(animationC)),
               ),
-
               new Row(children: <Widget>[
 //No sirve de nada ahorita.
               ],),
 
                 new Text('Bouncings: $dataSet'),
                 new Text('Height (fixed for now): $iRandom'),
-                new Text('Duration: $dura'),
-                new Text('$aniStatus'),
+                new Text('Y: $dy'),
 
             ],
           ),

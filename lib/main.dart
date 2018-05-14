@@ -87,26 +87,30 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
     setState(() {
 
 
-      //animationC.animateWith(simulation2);
       tween = new BarTween(new Bar.empty(), new Bar.random(random));
-      //tween = new BarTween(tween.evaluate(animationC), new Bar.random(random));
 
 
       dataSet++;
       iRandom = random.nextInt(1000);
 
+      animationC.animateWith(simulation2);
 
+
+
+
+      /*
       animationC.forward(from: 0.0);
       
       animationC.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        animationC.reverse();
-      } 
-
+        if (status == AnimationStatus.completed) {
+          animationC.reverse();
+        }
+      });
+      */
       /*else if (status == AnimationStatus.dismissed) {
         animation.forward();
       }*/
-    });
+
 
 
 

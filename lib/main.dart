@@ -19,12 +19,13 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
   final random = new Random();
   AnimationController animationC;
   Animation<double> ani;
+  AnimationStatus aniStatus;
 
-  int dataSet = 5;
+  int dataSet = 1;
   int iRandom;
   Duration dur;
 
-  ScrollSpringSimulation simulation;
+  //ScrollSpringSimulation simulation;
   GravitySimulation simulation2;
 
   BarTween tween;
@@ -34,7 +35,7 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
     super.initState();
 
     iRandom = random.nextInt(1000);//Random integer
-    dur = new Duration(milliseconds: 400);//Duration of the animationController
+    dur = new Duration(milliseconds: 50);//Duration of the animationController
 
 
     animationC = new AnimationController(
@@ -42,14 +43,28 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
       vsync: this,
     );
 
+    simulation2= new GravitySimulation(
+      -19.8, // acceleration, pixels per second per second
+      0.0, // starting position, pixels
+      1.0, // ending position, pixels
+      6.0, // starting velocity, pixels per second
+      //It was so lucky to find the 4.0 velocity, with more it does not work!
+      //Have to try with more height
+      //The original gravity and velocity was -9.8 and 4.0
+    );
 
-    //ani = new CurvedAnimation(parent: animationC, curve: Curves.easeIn);
+
+    ani = new CurvedAnimation(parent: animationC, curve: Curves.easeIn);
     //Review if ani is only used here to eliminate until know exactly what help provides.
 
+    ani.addStatusListener((status) {
+      aniStatus = status;
+    });
 
 
 
-    simulation = ScrollSpringSimulation(
+    //It is not used.
+    /*simulation = ScrollSpringSimulation(
       SpringDescription(
         mass: 2.0,
         stiffness: 1.0,
@@ -59,13 +74,8 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
       400.0, // ending position, pixels
       0.0, // starting velocity, pixels per second
     );
+    */
 
-    simulation2= new GravitySimulation(
-      -10.5, // acceleration, pixels per second per second
-      0.0, // starting position, pixels
-      300.0, // ending position, pixels
-      4.0, // starting velocity, pixels per second
-    );
 
 
     //animationC.fling(velocity: 0.1);
@@ -87,40 +97,15 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
     setState(() {
 
 
-      tween = new BarTween(new Bar.empty(), new Bar.random(random));
+      if (aniStatus == AnimationStatus.completed) {
+
+        dataSet++;
+        iRandom = random.nextInt(1000);
+        tween = new BarTween(new Bar.empty(), new Bar.random(random));
+        animationC.animateWith(simulation2);
+      }
 
 
-      dataSet++;
-      iRandom = random.nextInt(1000);
-
-      animationC.animateWith(simulation2);
-
-
-
-
-      /*
-      animationC.forward(from: 0.0);
-      
-      animationC.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          animationC.reverse();
-        }
-      });
-      */
-      /*else if (status == AnimationStatus.dismissed) {
-        animation.forward();
-      }*/
-
-
-
-
-      //CAMBIO #002 Rollbacked
-      //this(repaint: animationC);
-      //tween = new BarTween(tween.evaluate(animationC),new Bar.empty());
-      //animationC.forward(from: 0.0);
-
-      //CAMBIO #001 Rollbacked
-      //animationC.forward();
     });
   }
 
@@ -128,25 +113,40 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     int dura = animationC.duration.inMilliseconds;
     return new Scaffold(
-      body: new Container(
-        padding: const EdgeInsets.only(top: 500.0),
-        child: new Column(
-          children: <Widget>[
-            new CustomPaint(
-              size: new Size(400.0, 100.0),
-              painter: new BarChartPainter(tween.animate(animationC)),
-            ),
-            new Text('$dataSet'),
-            new Text('$iRandom'),
-            new Text('$dura'),
-          ],
+      body: new GestureDetector(
+        onTap: changeData,
+        child: new Container(
+
+          padding: const EdgeInsets.only(top: 500.0), //Push container to the bottom
+
+          child: new Column(
+            children: <Widget>[
+              new CustomPaint(
+                size: new Size(400.0, 100.0),
+                painter: new BarChartPainter(tween.animate(animationC)),
+              ),
+
+              new Row(children: <Widget>[
+//No sirve de nada ahorita.
+              ],),
+
+                new Text('Bouncings: $dataSet'),
+                new Text('Height (fixed for now): $iRandom'),
+                new Text('Duration: $dura'),
+                new Text('$aniStatus'),
+
+            ],
+          ),
         ),
-      ),
+
+    ),
 
       floatingActionButton: new FloatingActionButton(
         child: new Icon(Icons.refresh),
         onPressed: changeData,
       ),
+
+
     );
   }
 }

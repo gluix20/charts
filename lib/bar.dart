@@ -57,10 +57,14 @@ class BarChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final bar = animation.value;
+   
+
     final paint = new Paint()
       ..color = bar.color
       ..style = PaintingStyle.fill;
+
     canvas.drawRect(
+
       new Rect.fromLTWH(
         (size.width - barWidth) / 2.0,
         (size.height - bar.height) ,
@@ -70,6 +74,17 @@ class BarChartPainter extends CustomPainter {
       ),
       paint,
     );
+
+
+
+    final radius = 50.0;
+    final center = new Offset((size.width ) / 2.0, (size.height - bar.height) );
+    final Paint paint2 = new Paint()
+      ..isAntiAlias = true
+      ..strokeWidth = 2.0
+      ..color = Colors.blue[500]
+      ..style = PaintingStyle.stroke;
+    canvas.drawCircle(center, radius, paint2);
   }
 
   @override

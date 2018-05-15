@@ -16,13 +16,12 @@ class ChartPage extends StatefulWidget {
 }
 
 class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
-  final random = new Random();
+
   AnimationController animationC;
   Animation<double> ani;
   AnimationStatus aniStatus;
 
   int dataSet = 1;
-  int iRandom;
   Duration dur;
   double dy = 0.0;
 
@@ -35,9 +34,7 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    iRandom = random.nextInt(1000);//Random integer
-    dur = new Duration(milliseconds: 50);//Duration of the animationController
-
+    dur = new Duration(milliseconds: 400);//Duration of the animationController
 
     animationC = new AnimationController(
       duration: dur,
@@ -77,22 +74,19 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
     );
     */
 
-
-
-    //animationC.fling(velocity: 0.1);
-
-
-    tween = new BarTween(new Bar.empty(), new Bar.random(random));
+    tween = new BarTween(new Bar.empty(), new Bar.random());
 
     animationC.animateWith(simulation2);
     //animationC.forward();
   }
+
 
   @override
   void dispose() {
     animationC.dispose();
     super.dispose();
   }
+
 
   void changeData() {
     setState(() {
@@ -101,8 +95,7 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
       if (dy <= 40.0 && dy >= 0.0) {
 
         dataSet++;
-        iRandom = random.nextInt(1000);
-        tween = new BarTween(new Bar.empty(), new Bar.random(random));
+        tween = new BarTween(new Bar.empty(), new Bar.random());
         animationC.animateWith(simulation2);
       }
 
@@ -132,20 +125,14 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
               ],),
 
                 new Text('Bouncings: $dataSet'),
-                new Text('Height (fixed for now): $iRandom'),
                 new Text('Y: $dy'),
 
-            ],
+              ],
+            ),
           ),
-        ),
-    ),
-
-      floatingActionButton: new FloatingActionButton(
-        child: new Icon(Icons.refresh),
-        onPressed: changeData,
       ),
 
-
+      
     );
   }
 }

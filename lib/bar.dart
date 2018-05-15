@@ -24,11 +24,15 @@ class Bar {
   //Method that returns a random color object at (0.0 , 500.0) point.
   factory Bar.random() {
     final random = new Random();
+    double nextdy = 0.0;
+    while (nextdy < 100){
+      nextdy = random.nextDouble() * 500.0;
+    }
 
     return new Bar(
       ColorPalette.primary.random(random),
       800.0, //Testing
-      random.nextDouble() * 500.0, //Testing
+      nextdy, //Testing
     );
   }
 

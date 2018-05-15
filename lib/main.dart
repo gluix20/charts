@@ -21,9 +21,10 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
   Animation<double> ani;
   AnimationStatus aniStatus;
 
-  int dataSet = 1;
+  int bouncings = 0;
   Duration dur;
   double dy = 0.0;
+  double y = 0.0;
 
   //ScrollSpringSimulation simulation;
   GravitySimulation simulation2;
@@ -74,9 +75,10 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
     );
     */
 
-    tween = new BarTween(new Bar.empty(), new Bar.random());
+    tween = new BarTween(new Bar.empty(), new Bar.empty());
+    //animationC.animateWith(simulation2);
 
-    animationC.animateWith(simulation2);
+
     //animationC.forward();
   }
 
@@ -91,11 +93,15 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
   void changeData() {
     setState(() {
 
-      dy = tween.evaluate(animationC).dy;
-      if (dy <= 40.0 && dy >= 0.0) {
 
-        dataSet++;
-        tween = new BarTween(new Bar.empty(), new Bar.random());
+      Bar end = new Bar.random();
+      y = (end.dy);
+
+      dy = tween.evaluate(animationC).dy;
+      if (dy <= 50.0 && dy >= 0.0) {
+
+        bouncings++;
+        tween = new BarTween(new Bar.empty(), end);
         animationC.animateWith(simulation2);
       }
 
@@ -121,18 +127,18 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
                 painter: new BarChartPainter(tween.animate(animationC)),
               ),
               new Row(children: <Widget>[
-//No sirve de nada ahorita.
+              //No sirve de nada ahorita.
               ],),
 
-                new Text('Bouncings: $dataSet'),
-                new Text('Y: $dy'),
+                new Text('Bouncings: $bouncings'),
+                new Text('Y: $y'),
 
               ],
             ),
           ),
       ),
 
-      
+
     );
   }
 }

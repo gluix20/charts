@@ -26,7 +26,7 @@ class Bar {
     final random = new Random();
     double nextdy = 0.0;
     while (nextdy < 100){
-      nextdy = random.nextDouble() * 500.0;
+      nextdy = random.nextDouble() * 750.0;
     }
 
     return new Bar(

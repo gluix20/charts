@@ -31,6 +31,8 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
 
   BarTween tween;
 
+  final Color color;
+
   @override
   void initState() {
     super.initState();
@@ -109,6 +111,14 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
     });
   }
 
+  static BorderSide createBorderSide(BuildContext context, { Color color, double width: 0.0 }) {
+    assert(width != null);
+    return new BorderSide(
+      color: color ?? Theme.of(context).dividerColor,
+      width: width,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -117,24 +127,35 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
         onTap: changeData,
         child: new Container(
 
-          padding: const EdgeInsets.only(top: 100.0), //Push container to the bottom
-
+          //padding: const EdgeInsets.only(top: 100.0), //Push container to the bottom
+          height: 750.0,
           child: new Column(
             children: <Widget>[
               new CustomPaint(
 
-                size: new Size(100.0, 600.0),
+                size: new Size(100.0, 700.0),
                 painter: new BarChartPainter(tween.animate(animationC)),
               ),
+
+
+
               new Row(children: <Widget>[
               //No sirve de nada ahorita.
               ],),
 
-                new Text('Bouncings: $bouncings'),
-                new Text('Y: $y'),
+
+              new Text('Bouncings: $bouncings'),
+              new Text('Y: $y'),
 
               ],
             ),
+
+            decoration: new BoxDecoration(
+              border: new Border(
+                bottom: createBorderSide(context, color: color),
+              ),
+            ),
+
           ),
       ),
 

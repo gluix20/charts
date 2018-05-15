@@ -118,13 +118,13 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
         onTap: changeData,
         child: new Container(
 
-          padding: const EdgeInsets.only(top: 200.0), //Push container to the bottom
+          padding: const EdgeInsets.only(top: 100.0), //Push container to the bottom
 
           child: new Column(
             children: <Widget>[
               new CustomPaint(
 
-                size: new Size(100.0, 500.0),
+                size: new Size(100.0, 600.0),
                 painter: new BarChartPainter(tween.animate(animationC)),
               ),
               new Row(children: <Widget>[
@@ -138,7 +138,6 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
             ],
           ),
         ),
-
     ),
 
       floatingActionButton: new FloatingActionButton(

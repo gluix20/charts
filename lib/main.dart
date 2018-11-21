@@ -23,8 +23,9 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
 
   int bouncings = 0;
   Duration dur;
-  double dy = 0.0;
-  double y = 0.0;
+  int dy = 0;
+  int y = 0;
+
 
   //ScrollSpringSimulation simulation;
   GravitySimulation simulation2;
@@ -55,7 +56,7 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
     );
 
 
-    ani = new CurvedAnimation(parent: animationC, curve: Curves.easeIn);
+    ani = new CurvedAnimation(parent: animationC, curve: Curves.bounceIn);
     //Review if ani is only used here to eliminate until know exactly what help provides.
 
     ani.addStatusListener((status) {
@@ -92,26 +93,39 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
   }
 
 
+  void refreshB(){
+    setState(() {
+      bouncings = 0;
+    });
+  }
+
   void changeData() {
     setState(() {
 
-
+      Bar begin = new Bar.empty();
       Bar end = new Bar.random();
-      y = (end.dy);
+      y = (end.dy).toInt();
 
-      dy = tween.evaluate(animationC).dy;
-      if (dy <= 50.0 && dy >= 0.0) {
+      dy = tween.evaluate(animationC).dy.toInt();
+/*
+
+      if((bouncings > 0) && dy <= 80.0 && dy > 20.0) {
+        begin = new Bar.now(dy);
+      }
+*/
+      if ((bouncings == 0) || dy <= 150.0 && dy >= 0.0) {
 
         bouncings++;
-        tween = new BarTween(new Bar.empty(), end);
+        tween = new BarTween(begin, end);
         animationC.animateWith(simulation2);
+
       }
 
 
     });
   }
 
-  static BorderSide createBorderSide(BuildContext context, { Color color, double width: 0.0 }) {
+  static BorderSide createBorderSide(BuildContext context, { Color color, double width: 3.0 }) {
     assert(width != null);
     return new BorderSide(
       color: color ?? Theme.of(context).dividerColor,
@@ -123,42 +137,68 @@ class ChartPageState extends State<ChartPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
 
     return new Scaffold(
-      body: new GestureDetector(
-        onTap: changeData,
-        child: new Container(
-
-          //padding: const EdgeInsets.only(top: 100.0), //Push container to the bottom
-          height: 750.0,
-          child: new Column(
-            children: <Widget>[
-              new CustomPaint(
-
-                size: new Size(100.0, 700.0),
-                painter: new BarChartPainter(tween.animate(animationC)),
-              ),
-
-
-
-              new Row(children: <Widget>[
-              //No sirve de nada ahorita.
-              ],),
-
-
-              new Text('Bouncings: $bouncings'),
-              new Text('Y: $y'),
-
-              ],
-            ),
-
-            decoration: new BoxDecoration(
-              border: new Border(
-                bottom: createBorderSide(context, color: color),
-              ),
-            ),
-
-          ),
+      appBar: new AppBar(
+        title: new Text('Bouncings: $bouncings'),
       ),
 
+      body: new GestureDetector(
+        onTap: changeData,
+
+        child: new Column(
+          children: <Widget>[
+            new Container(
+
+              //padding: const EdgeInsets.only(top: 100.0), //Push container to the bottom
+              height: 620.0,
+              child: new Column(
+                children: <Widget>[
+
+                  new CustomPaint(
+                    size: new Size(300.0, 617.0),
+                    painter: new BarChartPainter(tween.animate(animationC)),
+                  ),
+
+
+                  new Row(children: <Widget>[
+                    //No sirve de nada ahorita.
+                  ],),
+
+/*
+                  new CustomPaint(
+                    size: new Size(300.0, 0.0),
+                    painter: new Sky(),
+                  ),
+*/
+                ],
+              ),
+
+              decoration: new BoxDecoration(
+                border: new Border(
+                  bottom: createBorderSide(context, color: color),
+                ),
+              ),
+
+
+            ),
+
+
+
+            //new Text('.', style: new TextStyle(color: Colors.transparent)),
+            //new Text('.', style: new TextStyle(color: Colors.transparent)),
+            //new Text('.', style: new TextStyle(color: Colors.transparent)),
+            //new Text('.', style: new TextStyle(color: Colors.transparent)),
+            //new Text('dy: $dy'),
+            //new Text('Bouncings: $bouncings'),
+            //new Text('Y: $y'),
+          ],
+        ),
+
+
+      ),
+      floatingActionButton: new FloatingActionButton(
+        child: new Icon(Icons.refresh),
+        onPressed: refreshB,
+      ),
 
     );
   }

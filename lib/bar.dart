@@ -11,6 +11,8 @@ class Bar {
   final Color color;
   final double dx;
   final double dy;
+  final radius = 20.0;
+
 
   Bar(this.color, this.dx, this.dy);
 
@@ -18,20 +20,25 @@ class Bar {
   //factory Bar.empty() => new Bar(Colors.transparent, 0.0, 0.0);
   factory Bar.empty() {
     final random = new Random();
-    return new Bar(ColorPalette.primary.random(random), 0.0, 0.0);
+    return new Bar(ColorPalette.primary.random(random), 0.0, 20.0);
+  }
+
+  factory Bar.now(double y) {
+    final random = new Random();
+    return new Bar(ColorPalette.primary.random(random), 0.0, y);
   }
 
   //Method that returns a random color object at (0.0 , 500.0) point.
   factory Bar.random() {
     final random = new Random();
     double nextdy = 0.0;
-    while (nextdy < 100){
-      nextdy = random.nextDouble() * 750.0;
+    while (nextdy <= 140 ){
+      nextdy = random.nextDouble() * 620; //El 640 representa el size height 700 menos 3 veces el radius 20.
     }
 
     return new Bar(
       ColorPalette.primary.random(random),
-      800.0, //Testing
+      100.0, //Testing
       nextdy, //Testing
     );
   }
@@ -58,6 +65,7 @@ class BarChartPainter extends CustomPainter {
   static const barHeight = 32.0;
   final Animation<Bar> animation;
 
+
   BarChartPainter(Animation<Bar> animation)
       : animation = animation,
         super(repaint: animation);
@@ -74,12 +82,33 @@ class BarChartPainter extends CustomPainter {
       ..color = bar.color
       ..style = PaintingStyle.fill;
 
-    final radius = 20.0;
-    final centerOffset = new Offset((size.width ) / 2.0, (size.height - bar.dy) - (2.0 * radius) );
+    final double x = size.width / 2.0 ;//+ bar.dx;
+    final double y = (size.height - bar.dy);
 
-    canvas.drawCircle(centerOffset, radius, circlePaint);
+    final centerOffset = new Offset(x, y);
+
+    canvas.drawCircle(centerOffset, bar.radius, circlePaint);
   }
 
   @override
   bool shouldRepaint(BarChartPainter old) => false;
+}
+
+class Sky extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRect(
+      new Rect.fromLTRB(
+          -200.0, 0.0, 200.0, 100.0
+      ),
+      new Paint()
+        ..color = new Color(0xFF0099FF)
+        ..style = PaintingStyle.stroke
+    );
+  }
+
+  @override
+  bool shouldRepaint(Sky oldDelegate) {
+    return false;
+  }
 }
